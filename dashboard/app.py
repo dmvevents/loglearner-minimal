@@ -16,6 +16,7 @@ import os
 import re
 import sqlite3
 import sys
+import time
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -157,7 +158,7 @@ def esc(s):
 
 
 def db():
-    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True, timeout=30)  # wait through an indexer commit
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -520,7 +521,7 @@ def _abstract_block(c, r, qs, tl, el):
     if os.environ.get("LOGLEARNER_LLM_ABSTRACT") != "1":
         return ('<p class="muted">LLM abstract: off (start server with '
                 'LOGLEARNER_LLM_ABSTRACT=1 to enable; ≤$0.01/session, cached)</p>')
-    rw = sqlite3.connect(DB_PATH)
+    rw = sqlite3.connect(DB_PATH, timeout=30)  # wait for the indexer instead of failing at 5 s
     rw.execute("CREATE TABLE IF NOT EXISTS abstracts"
                " (path TEXT PRIMARY KEY, mtime REAL, model TEXT, text TEXT)")
     row = rw.execute("SELECT mtime, model, text FROM abstracts WHERE path=?",
@@ -1846,9 +1847,13 @@ def _jsonl_rows(path):
     return rows
 
 
+_TILE_LAST_GOOD = {"ll": None, "at": None, "locked_since": None}  # last good index counts, served through a transient lock
+
+
 def api_tile(db_path=None, banks_dir=None, ucb_dir=None, cautions_path=None, now=None):
     """Build the tile JSON. Every section carries ok/error; status is 'ok' only when the
-    two primary sources (index + banks) are present."""
+    two primary sources (index + banks) are present. A transient 'database is locked' on the
+    index (the indexer committing) serves the last good counts with a note instead of degraded."""
     import datetime as _dt
     db_path = Path(db_path or DB_PATH)
     banks_dir = Path(banks_dir or BANKS_DIR).expanduser()
@@ -1861,7 +1866,7 @@ def api_tile(db_path=None, banks_dir=None, ucb_dir=None, cautions_path=None, now
     try:
         if not db_path.is_file():
             raise FileNotFoundError(f"index not found: {db_path} (run dashboard/indexer.py)")
-        c = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        c = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=30)  # the tile waits through a commit instead of going red
         c.row_factory = sqlite3.Row
         tot = c.execute("SELECT COUNT(*) n, SUM(size_bytes) b, SUM(tool_calls) t,"
                         " SUM(user_corrections) uc, SUM(tool_errors) te FROM sessions").fetchone()
@@ -1874,6 +1879,22 @@ def api_tile(db_path=None, banks_dir=None, ucb_dir=None, cautions_path=None, now
               "last_index": dict(c.execute("SELECT * FROM meta")).get("last_index"),
               "index_db": str(db_path)}
         c.close()
+        _TILE_LAST_GOOD["ll"] = dict(ll)
+        _TILE_LAST_GOOD["at"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        _TILE_LAST_GOOD["locked_since"] = None
+    except sqlite3.OperationalError as e:
+        # A transient lock (the indexer committing) is not an outage - serve the last good
+        # counts with a note and status ok, so the home tiles never flip Down for an index refresh.
+        if "locked" in str(e).lower() and _TILE_LAST_GOOD.get("ll"):
+            since = _TILE_LAST_GOOD.get("locked_since") or now.strftime("%H:%MZ")
+            _TILE_LAST_GOOD["locked_since"] = since
+            ll = dict(_TILE_LAST_GOOD["ll"])
+            ll["note"] = (f"index refresh in progress since {since} "
+                          f"(counts from {_TILE_LAST_GOOD.get('at')})")
+            ll["stale"] = True
+        else:
+            ll = {"ok": False, "error": f"{type(e).__name__}: {e}", "index_db": str(db_path)}
+            errors.append("log_learner: " + ll["error"])
     except Exception as e:  # noqa: BLE001 — report, never raise
         ll = {"ok": False, "error": f"{type(e).__name__}: {e}", "index_db": str(db_path)}
         errors.append("log_learner: " + ll["error"])
@@ -1998,11 +2019,16 @@ class Handler(BaseHTTPRequestHandler):
         self._send(404, "text/plain", b"not found")
 
     def _send(self, code, ctype, body):
-        self.send_response(code)
-        self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError) as e:
+            # the client gave up (a home page may abort a slow tile read): one line, no traceback
+            sys.stderr.write(f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())} client closed "
+                             f"{self.path} before the reply ({type(e).__name__}, {len(body)} bytes)\n")
 
     def log_message(self, fmt, *args):
         pass  # quiet

@@ -1,4 +1,4 @@
-> **Public minimal runtime of LogLearner; upstream development is private.** This repository is the gated minimal-runtime export (version 0.1.12), file-for-file identical to `dist/loglearner-minimal-0.1.12-20261126.tar.gz` except for this note. See RELEASE.md.
+> **Public minimal runtime of LogLearner; upstream development is private.** This repository is the gated minimal-runtime export (version 0.1.13), file-for-file identical to `dist/loglearner-minimal-0.1.13-20261126.tar.gz` except for this note. See RELEASE.md.
 
 # Log Learner — minimal runtime (vendored)
 

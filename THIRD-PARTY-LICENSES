@@ -1,0 +1,29 @@
+Third-party software used by loglearner-minimal
+================================================
+
+LogLearner itself is MIT-licensed (see LICENSE). The runtime is stdlib-only: this repository vendors no
+third-party code, and the list below covers everything the runtime loads or can load. Licenses were read
+from each project's registry entry on 2026-11-26.
+
+Required at run time
+--------------------
+- Python 3 (interpreter and standard library, including sqlite3); the tests pass on 3.10 and 3.14.
+  License: Python Software Foundation License Version 2 (PSF-2.0).
+  https://docs.python.org/3/license.html
+
+Loaded by the dashboard's /graph page in the browser (not shipped, not installed)
+--------------------------------------------------------------------------------
+- Cytoscape.js 3.30.2, loaded by the page from https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js
+  License: MIT. Copyright (c) 2016-2024, The Cytoscape Consortium.
+  https://github.com/cytoscape/cytoscape.js/blob/master/LICENSE
+
+Optional at run time (used only when importable)
+------------------------------------------------
+- hindsight_api, the Hindsight memory API package (PyPI: hindsight-api; the dashboard can also reach a
+  Hindsight server over HTTP). loglearner/sinks/hindsight_sink.py imports it inside try/except and
+  falls back when it is absent.
+  License: MIT. https://pypi.org/project/hindsight-api/
+
+Used only to run the shipped tests (tests/)
+-------------------------------------------
+- pytest. License: MIT. https://github.com/pytest-dev/pytest/blob/main/LICENSE

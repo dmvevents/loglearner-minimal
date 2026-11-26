@@ -142,7 +142,7 @@ class VerifyStep:
         reg = {"rule_sessions": {}, "rule_projects": {}}
         project = ctx.get("project", "")
         for ex in examples:
-            rkey = hashlib.sha1((getattr(ex, "instinct_rule", "") or "").encode("utf-8")).hexdigest()[:12]
+            rkey = hashlib.sha1((getattr(ex, "instinct_rule", "") or "").encode("utf-8"), usedforsecurity=False).hexdigest()[:12]
             reg["rule_sessions"].setdefault(rkey, set()).add(getattr(ex, "session_id", "?") or "?")
             if project:
                 reg["rule_projects"].setdefault(rkey, set()).add(project)
@@ -186,7 +186,7 @@ def _example_to_rule_dict(example, registry: dict | None = None) -> dict:
     line_range = getattr(example, "line_range", (0, 0)) or (0, 0)
     session_id = getattr(example, "session_id", "?") or "?"
     rule_text = getattr(example, "instinct_rule", "") or ""
-    rule_key = hashlib.sha1(rule_text.encode("utf-8")).hexdigest()[:12]
+    rule_key = hashlib.sha1(rule_text.encode("utf-8"), usedforsecurity=False).hexdigest()[:12]
 
     sessions: set[str] = {session_id}
     projects: set[str] = set()

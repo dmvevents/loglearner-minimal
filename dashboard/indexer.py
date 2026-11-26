@@ -661,10 +661,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--project", help="only index projects containing SUBSTR")
     ap.add_argument("--db", default=str(DB_DEFAULT))
+    # The periodic refresh passes this flag: a run that found nothing
+    # changed keeps the previous similarity pairs/edges instead of deleting and re-inserting them (about 30k pairs
+    # + 73k edges, most of a 163-181 s run). The first run after a start (no flag) and every run with a changed
+    # session or bank rebuild them as before.
+    ap.add_argument("--skip-similarity-when-unchanged", action="store_true",
+                    help="keep the previous similarity pairs/edges when no session or bank changed")
     args = ap.parse_args()
 
     t0 = time.time()
-    db = sqlite3.connect(args.db)
+    # The dashboard's mode=ro readers must never see 'database is
+    # locked' - WAL lets them read beside this writer's transactions (persistent in the file, set once), and the
+    # 30 s busy timeout waits through a reader's statement instead of dying at the 5 s default.
+    db = sqlite3.connect(args.db, timeout=30)
+    db.execute("PRAGMA busy_timeout=30000")
+    db.execute("PRAGMA journal_mode=WAL")
     db.executescript(SCHEMA)
     scanned, skipped = index_sessions(db, args.project)
     n_instincts = index_instincts(db)
@@ -673,7 +684,19 @@ def main():
     index_store_extras(db)
     n_search = index_search(db)
     b_scanned, n_body = index_bodies(db)
-    n_sim, n_edges = index_similarity_and_edges(db)
+    # the change signature of this run - the counts the similarity/edge rebuild derives from
+    n_sessions = db.execute("SELECT COUNT(*) FROM sessions").fetchone()[0]
+    sig = f"{n_sessions}|{n_instincts}|{n_learn}|{n_store}|{n_search}|{n_body}"
+    prev = db.execute("SELECT value FROM meta WHERE key='last_index_sig'").fetchone()
+    if (args.skip_similarity_when_unchanged and scanned == 0 and b_scanned == 0
+            and prev is not None and prev[0] == sig):
+        n_sim = db.execute("SELECT COUNT(*) FROM sessions_similarity").fetchone()[0]
+        n_edges = db.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
+        print(f"  similarity/edges kept from the previous run (nothing changed): {n_sim} pairs, {n_edges} edges",
+              flush=True)
+    else:
+        n_sim, n_edges = index_similarity_and_edges(db)
+    db.execute("REPLACE INTO meta VALUES ('last_index_sig', ?)", (sig,))
     db.execute(
         "REPLACE INTO meta VALUES ('last_index', ?)", (time.strftime("%F %T"),)
     )

@@ -48,7 +48,7 @@ def ucb_state_path():
 
 def arm_id_for_rule(rule):
     """Stable across runs: the same rule text always mints the same arm."""
-    return f"ll-{hashlib.sha1((rule or '').encode()).hexdigest()[:10]}_apply"
+    return f"ll-{hashlib.sha1((rule or '').encode(), usedforsecurity=False).hexdigest()[:10]}_apply"
 
 
 def load_arms():
@@ -217,7 +217,7 @@ def measure_arms(sessions, gaps, exposures=None):
             f"{getattr(g, 'end_line', 0)}:{getattr(g, 'gap_type', '')}"
             for g in recurrences)
         key = f"{arm['arm']}|{','.join(sorted(measured))}|{','.join(evidence)}"
-        obs_id = f"obs-{hashlib.sha1(key.encode()).hexdigest()[:10]}"
+        obs_id = f"obs-{hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest()[:10]}"
         if obs_id in seen:
             continue  # identical evidence already counted (replay)
         seen.add(obs_id)

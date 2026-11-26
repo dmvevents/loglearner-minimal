@@ -1,0 +1,110 @@
+{
+ "_schema": "labeling-profile/v1",
+ "name": "hpc-derived",
+ "description": "HPC agent-session corpus: DeepEP/NIXL/NVSHMEM EFA optimization, HyperPod VPC CNI troubleshooting, and multi-LLM consensus work on AWS GPU clusters",
+ "artifact_rules": [
+  [
+   "postmortem",
+   "root[\\s_-]?cause|troubleshooting"
+  ],
+  [
+   "evaluation",
+   "\\bresults\\b|\\bexperiments\\b|gb/s|\\biteration\\b"
+  ],
+  [
+   "plan",
+   "\\bplan\\b|\\bdraft\\b"
+  ],
+  [
+   "analysis",
+   "gap[\\s_-]?analysis|deep[\\s_-]?research|\\banalysis\\b|\\bresearch\\b"
+  ],
+  [
+   "architecture",
+   "\\barchitecture\\b|\\bsystem\\b"
+  ]
+ ],
+ "artifact_default": "note",
+ "lane_rules": [
+  [
+   "nccl-gin",
+   "nccl[\\s_-]?gin|\\bgin\\b"
+  ],
+  [
+   "deepep-nixl",
+   "deepep[\\s_-]?nixl|nixl[\\s_-]?efa|\\bnixl\\b"
+  ],
+  [
+   "nvshmem-proxy",
+   "\\bnvshmem\\b|\\bproxy\\b"
+  ],
+  [
+   "hyperpod-vpc-cni",
+   "hyperpod|vpc[\\s_-]?cni|cni[\\s_-]?troubleshooting|\\bvpc\\b|\\bcni\\b"
+  ],
+  [
+   "multi-llm-consensus",
+   "multi-llm|gpt-5\\.4|\\bgemini\\b|consensus"
+  ],
+  [],
+  [
+   "deepep-efa",
+   "\\bdeepep\\b|\\bdispatch\\b|\\bcombine\\b"
+  ],
+  [
+   "disagg-inference",
+   "disaggregated[\\s_-]?inference|\\binference\\b"
+  ],
+  [
+   "efa-rdma",
+   "aws[\\s_-]?efa|efa[\\s_-]?rdma|\\befa\\b|\\brdma\\b|\\bnccl\\b"
+  ],
+  [],
+  [
+   "gpu-optimization",
+   "\\boptimization\\b|\\bgpu\\b|gb/s|\\bnvidia\\b"
+  ],
+  [
+   "research",
+   "deep[\\s_-]?research|\\bresearch\\b"
+  ]
+ ],
+ "lane_default": "misc",
+ "axis_rules": [
+  [
+   "gap_detection",
+   "root[\\s_-]?cause|gap[\\s_-]?analysis|troubleshooting"
+  ],
+  [
+   "extraction",
+   "multi-llm|consensus|gpt-5\\.4|\\bgemini\\b"
+  ],
+  [
+   "ingestion",
+   "\\bsession\\b|claude[\\s_-]?code"
+  ],
+  [
+   "verification",
+   "\\bresults\\b|\\bexperiments\\b|\\bcomplete\\b|\\bfix\\b"
+  ],
+  [
+   "pattern_mining",
+   "\\boptimization\\b|\\biteration\\b|deep[\\s_-]?research|\\banalysis\\b"
+  ],
+  [
+   "pipeline",
+   "\\barchitecture\\b|\\bsystem\\b|\\bplan\\b|\\bdraft\\b"
+  ],
+  [
+   "knowledge_artifacts",
+   "\\bcode\\b"
+  ]
+ ],
+ "fallback_axis": "knowledge_artifacts",
+ "derived_from": {
+  "corpus": "maintainers' private gist corpus (GPU-networking/HPC dogfood)",
+  "sample": "439 gists indexed 2026-08-26",
+  "method": "scripts/derive_labeling_profile.py --index --agent claude --write",
+  "date": "2026-08-26"
+ }
+}

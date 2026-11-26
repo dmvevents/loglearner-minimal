@@ -1,0 +1,102 @@
+{
+ "_schema": "labeling-profile/v1",
+ "name": "generic",
+ "description": "Domain-neutral starter profile. Deliberately coarse — run scripts/derive_labeling_profile.py over your corpus (or the corpus-profiler agent) to generate a profile fitted to YOUR lanes and vocabulary, then pass it with --profile.",
+ "artifact_rules": [
+  [
+   "postmortem",
+   "postmortem|incident|outage"
+  ],
+  [
+   "evaluation",
+   "\\beval(uation)?\\b|\\bA/B\\b|benchmark|comparison|measured"
+  ],
+  [
+   "recipe",
+   "recipe|how ?to|runbook|guide\\b|tutorial|quickstart|setup"
+  ],
+  [
+   "report",
+   "report|summary|analysis|root cause|findings|review"
+  ]
+ ],
+ "artifact_default": "note",
+ "lane_rules": [
+  [
+   "infra",
+   "kubernetes|docker|terraform|cloud|deploy|server"
+  ],
+  [
+   "data",
+   "\\bsql\\b|dataset|pipeline|\\betl\\b|analytics"
+  ],
+  [
+   "ml",
+   "model|training|inference|\\bllm\\b|neural|\\bgpu\\b"
+  ],
+  [
+   "web",
+   "frontend|react|\\bapi\\b|http|browser"
+  ],
+  [
+   "security",
+   "security|vulnerab|\\bcve\\b|secret|auth"
+  ],
+  [
+   "ops",
+   "monitor|alert|incident|on-?call|sre"
+  ],
+  [
+   "docs",
+   "documentation|readme|spec\\b|design doc"
+  ]
+ ],
+ "lane_default": "misc",
+ "axis_rules": [
+  [
+   "pattern_mining",
+   "postmortem|lessons|anti-pattern|root cause"
+  ],
+  [
+   "verification",
+   "verif|acceptance|correctness|self-test"
+  ],
+  [
+   "memory",
+   "knowledge base|memory|recall"
+  ],
+  [
+   "ingestion",
+   "\\bjsonl\\b|transcript|ingest"
+  ],
+  [
+   "extraction",
+   "learnings\\b|rules|instincts"
+  ],
+  [
+   "dedup",
+   "dedup|duplicate"
+  ],
+  [
+   "gap_detection",
+   "regression|failure mode|defect"
+  ],
+  [
+   "runtime_injection",
+   "\\bskills?\\b|prompt"
+  ],
+  [
+   "adapters",
+   "log format|parser|adapter"
+  ],
+  [
+   "pipeline",
+   "pipeline|orchestrat"
+  ],
+  [
+   "output_shapes",
+   "\\bschema\\b|format"
+  ]
+ ],
+ "fallback_axis": "knowledge_artifacts"
+}

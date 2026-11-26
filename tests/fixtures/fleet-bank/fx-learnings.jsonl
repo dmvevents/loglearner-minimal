@@ -1,0 +1,2 @@
+{"id": "fxb-001", "rule": "When num_sms changes, the NEFF cache path changes too; count compile events, not cache directories.", "confidence": "high", "status": "negative", "evidence": "fixture", "source": "fixture", "provenance": "fixture"}
+{"id": "fxb-002", "rule": "A kernel edit on a shared pod must be preceded by a fresh-pod check.", "confidence": "high", "status": "positive", "evidence": "fixture", "source": "fixture", "provenance": "fixture"}

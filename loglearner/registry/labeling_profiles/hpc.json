@@ -1,0 +1,134 @@
+{
+ "_schema": "labeling-profile/v1",
+ "name": "hpc",
+ "description": "HPC/GPU-networking corpus profile (DeepEP/EFA/K8s gists) — the dogfood profile this product was built against. Rule lists are ordered: first match wins, order encodes precedence.",
+ "artifact_rules": [
+  [
+   "postmortem",
+   "postmortem"
+  ],
+  [
+   "leadership",
+   "leadership|business-impact|\\bGTM\\b|work record"
+  ],
+  [
+   "evaluation",
+   "\\beval(uation)?\\b|\\bA/B\\b|head-to-head|benchmark|measured|apportionment"
+  ],
+  [
+   "recipe",
+   "recipe|how to|runbook|instructional|guide\\b|reproducible|drop-in|package|quickstart|one-shot"
+  ],
+  [
+   "report",
+   "report|summary|analysis|root cause|verdict|lessons|write-up|catalog"
+  ]
+ ],
+ "artifact_default": "note",
+ "lane_rules": [
+  [
+   "deepep",
+   "deep-?ep"
+  ],
+  [
+   "nixl",
+   "nixl"
+  ],
+  [
+   "dynamo",
+   "dynamo"
+  ],
+  [
+   "gdaki",
+   "gdaki|\\bgin\\b|ibgda"
+  ],
+  [
+   "nvshmem",
+   "nvshmem"
+  ],
+  [
+   "nccl",
+   "nccl"
+  ],
+  [
+   "efa",
+   "\\befa\\b|libfabric|\\bsrd\\b"
+  ],
+  [
+   "slurm",
+   "slurm"
+  ],
+  [
+   "vllm",
+   "vllm"
+  ],
+  [
+   "sglang",
+   "sglang"
+  ],
+  [
+   "k8s",
+   "kubernetes|\\beks\\b|\\bk8s\\b|hyperpod|kueue|topolog"
+  ],
+  [
+   "trn2",
+   "trn2|neuron|trainium"
+  ],
+  [
+   "leadership",
+   "leadership|work record|\\bGTM\\b"
+  ],
+  [
+   "customer",
+   "<CUSTOMER_\\d+>"
+  ]
+ ],
+ "lane_default": "misc",
+ "axis_rules": [
+  [
+   "pattern_mining",
+   "postmortem|lessons|bug catalog|anti-pattern|root cause"
+  ],
+  [
+   "verification",
+   "verif|acceptance|gate[sd]?\\b|correctness|self-test"
+  ],
+  [
+   "memory",
+   "knowledge base|memory bank|recall|hindsight|instinct"
+  ],
+  [
+   "ingestion",
+   "\\bjsonl\\b|transcript|session log|ingest"
+  ],
+  [
+   "extraction",
+   "learnings\\b|rules mined|instincts"
+  ],
+  [
+   "dedup",
+   "dedup|duplicate"
+  ],
+  [
+   "gap_detection",
+   "regression|failure mode|silent (fallback|drop)|defect"
+  ],
+  [
+   "runtime_injection",
+   "\\bskills?\\b|prompt inject|system prompt"
+  ],
+  [
+   "adapters",
+   "log format|parser|adapter"
+  ],
+  [
+   "pipeline",
+   "pipeline|orchestrat"
+  ],
+  [
+   "output_shapes",
+   "\\bschema\\b|index format"
+  ]
+ ],
+ "fallback_axis": "knowledge_artifacts"
+}

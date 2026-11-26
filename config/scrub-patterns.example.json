@@ -1,0 +1,151 @@
+{
+ "_comment": "Schema example with FAKE values. The real config lives in state/scrub-patterns.json (gitignored) and must never be committed. Order matters: more-specific classes first.",
+ "version": 1,
+ "replacements": [
+  {
+   "class": "gate-1-telegram-chat-id",
+   "regex": "\\b9999999999\\b",
+   "placeholder": "<TELEGRAM_CHAT_ID>"
+  },
+  {
+   "class": "gate-3-public-ip",
+   "regex": "\\b192\\.0\\.2\\.55\\b",
+   "placeholder": "<PUBLIC_IP_1>"
+  },
+  {
+   "class": "gate-5a-kubeconfig-name",
+   "regex": "\\bconfig-example\\b",
+   "placeholder": "<KUBECONFIG_NAME>"
+  },
+  {
+   "class": "gate-5b-cluster-name",
+   "regex": "\\bexample-cluster-[A-Za-z0-9-]+",
+   "placeholder": "<CLUSTER_NAME>"
+  },
+  {
+   "class": "gate-6-hyperpod-node-id",
+   "regex": "\\bexamplepod-i-[0-9a-fA-F]+\\b",
+   "placeholder": "<HYPERPOD_NODE_ID>"
+  },
+  {
+   "class": "gate-8a-customer-1",
+   "regex": "(?<![A-Za-z0-9])example[-_]?corp(?![A-Za-z0-9])",
+   "placeholder": "<CUSTOMER_1>",
+   "flags": "i"
+  },
+  {
+   "class": "gate-9-aws-account-id",
+   "regex": "\\b999999999999\\b",
+   "placeholder": "<AWS_ACCOUNT_ID>"
+  },
+  {
+   "class": "bridge-path",
+   "regex": "\\bexample-router\\b",
+   "placeholder": "<TELEGRAM_BRIDGE_PATH>"
+  }
+ ],
+ "numbered": [
+  {
+   "class": "gate-4-private-ip",
+   "regex": "(?<![\\d.])198\\.51\\.100\\.\\d{1,3}\\b",
+   "placeholder_prefix": "PRIVATE_IP"
+  },
+  {
+   "class": "supp-1-ec2-instance-id",
+   "regex": "(?<![A-Za-z0-9])i-[0-9a-f]{8,}",
+   "placeholder_prefix": "EC2_INSTANCE_ID"
+  },
+  {
+   "class": "supp-2-eni-id",
+   "regex": "(?<![A-Za-z0-9])eni-[0-9a-f]{8,}",
+   "placeholder_prefix": "ENI_ID"
+  },
+  {
+   "_comment": "Generic shape, not a pinned literal: a SECOND account id sailed past the pinned gate-9 class on 2026-08-26. Hyphen excluded from the lookarounds so all-digit UUID segments (e.g. ...-446655440000) don't rewrite; dot-adjacent kept so ECR registry hosts (<acct>.dkr.ecr...) do.",
+   "class": "supp-3-aws-account-generic",
+   "regex": "(?<![0-9A-Za-z-])[0-9]{12}(?![0-9A-Za-z-])",
+   "placeholder_prefix": "AWS_ACCOUNT_GENERIC"
+  }
+ ],
+ "detectors": [
+  {
+   "class": "detect-openai-key",
+   "regex": "(?<![A-Za-z0-9])sk-[A-Za-z0-9_-]{20,}"
+  },
+  {
+   "class": "detect-github-token",
+   "regex": "(?<![A-Za-z0-9])gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}"
+  },
+  {
+   "class": "detect-aws-access-key",
+   "regex": "\\bAKIA[0-9A-Z]{16}\\b"
+  },
+  {
+   "class": "detect-slack-token",
+   "regex": "(?<![A-Za-z0-9])xox[abpr]-[A-Za-z0-9-]{10,}"
+  },
+  {
+   "class": "detect-private-key-block",
+   "regex": "-----BEGIN [A-Z ]*PRIVATE KEY-----"
+  },
+  {
+   "class": "detect-jwt",
+   "regex": "eyJ[A-Za-z0-9_-]{16,}\\.eyJ[A-Za-z0-9_-]{16,}"
+  },
+  {
+   "class": "detect-hmac-assignment",
+   "regex": "(?i)(hmac|bridge)[_-]?(key|secret)[\"'\\s:=]+[A-Za-z0-9+/=_-]{16,}"
+  },
+  {
+   "class": "detect-hf-token",
+   "regex": "(?<![A-Za-z0-9])hf_[A-Za-z0-9]{30,}"
+  },
+  {
+   "class": "detect-google-api-key",
+   "regex": "(?<![A-Za-z0-9])AIza[0-9A-Za-z_-]{30,}"
+  },
+  {
+   "class": "detect-gitlab-pat",
+   "regex": "(?<![A-Za-z0-9])glpat-[A-Za-z0-9_-]{20,}"
+  },
+  {
+   "class": "detect-npm-token",
+   "regex": "(?<![A-Za-z0-9])npm_[A-Za-z0-9]{30,}"
+  },
+  {
+   "class": "detect-docker-pat",
+   "regex": "(?<![A-Za-z0-9])dckr_pat_[A-Za-z0-9_-]{20,}"
+  },
+  {
+   "class": "detect-stripe-key",
+   "regex": "(?<![A-Za-z0-9])[sr]k_(live|test)_[A-Za-z0-9]{20,}"
+  },
+  {
+   "class": "detect-sendgrid-key",
+   "regex": "(?<![A-Za-z0-9])SG\\.[A-Za-z0-9_-]{16,}\\.[A-Za-z0-9_-]{16,}"
+  },
+  {
+   "class": "detect-slack-app-token",
+   "regex": "(?<![A-Za-z0-9])xapp-[0-9]-[A-Za-z0-9-]{10,}"
+  },
+  {
+   "class": "detect-slack-webhook",
+   "regex": "hooks\\.slack\\.com/services/T[A-Za-z0-9]+/B[A-Za-z0-9]+/[A-Za-z0-9]{16,}"
+  },
+  {
+   "class": "detect-aws-secret-assignment",
+   "regex": "(?i)aws_?secret_?access_?key[\"'\\s:=]+[A-Za-z0-9/+=]{30,}"
+  },
+  {
+   "class": "detect-putty-key",
+   "regex": "PuTTY-User-Key-File-[0-9]"
+  }
+ ],
+ "detector_allowlist": [],
+ "file_denylist": [
+  "settings.json",
+  "settings.local.json",
+  ".env",
+  ".env.local_deployment"
+ ]
+}

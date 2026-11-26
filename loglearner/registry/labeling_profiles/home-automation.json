@@ -1,0 +1,116 @@
+{
+ "_schema": "labeling-profile/v1",
+ "name": "home-automation",
+ "description": "Home Assistant issue-report corpus: integration/core problems with versions, diagnostics, logs, and YAML config snippets.",
+ "artifact_rules": [
+  [
+   "report",
+   "last\\s+working\\s+version|integration\\s+causing|core\\s+issue|type\\s+of\\s+installation"
+  ],
+  [
+   "diagnostics",
+   "diagnostics(\\s+information)?"
+  ],
+  [
+   "recipe",
+   "example\\s+yaml|yaml\\s+snippet"
+  ],
+  [
+   "reference",
+   "documentation\\s+website|link\\s+to\\s+integration|integration\\s+documentation"
+  ],
+  [
+   "evaluation",
+   "\\btests?\\b"
+  ]
+ ],
+ "artifact_default": "note",
+ "lane_rules": [
+  [
+   "diagnostics",
+   "diagnostics(\\s+information)?"
+  ],
+  [
+   "installation",
+   "type\\s+of\\s+installation|installation"
+  ],
+  [
+   "config-yaml",
+   "example\\s+yaml|yaml\\s+snippet|\\byaml\\b|\\bconfig\\b"
+  ],
+  [
+   "version-regression",
+   "last\\s+working(\\s+version)?|\\bversion\\b"
+  ],
+  [
+   "device",
+   "\\bdevices?\\b"
+  ],
+  [
+   "logs",
+   "\\blogs?\\b"
+  ],
+  [
+   "documentation",
+   "documentation|website|\\blink\\b"
+  ],
+  [
+   "testing",
+   "\\btests?\\b"
+  ],
+  [
+   "flow",
+   "\\bflow\\b"
+  ],
+  [
+   "error-triage",
+   "\\berrors?\\b|\\bproblem\\b|causing"
+  ],
+  [
+   "core",
+   "assistant\\s+core|\\bcore\\b"
+  ],
+  [
+   "integration",
+   "integration"
+  ]
+ ],
+ "lane_default": "misc",
+ "axis_rules": [
+  [
+   "verification",
+   "diagnostics|\\btests?\\b"
+  ],
+  [
+   "gap_detection",
+   "\\berrors?\\b|\\bproblem\\b|causing"
+  ],
+  [
+   "pipeline",
+   "\\bflow\\b"
+  ],
+  [
+   "extraction",
+   "example\\s+yaml|yaml\\s+snippet|\\bsnippet\\b"
+  ],
+  [
+   "ingestion",
+   "\\blogs?\\b|installation|running"
+  ],
+  [
+   "adapters",
+   "integration|\\bdevices?\\b"
+  ],
+  [
+   "knowledge_artifacts",
+   "documentation|website|\\blink\\b"
+  ]
+ ],
+ "fallback_axis": "knowledge_artifacts",
+ "derived_from": {
+  "corpus": "home-assistant/core GitHub issues (public OSS, home-automation domain — foreign to the maintainers' HPC fleet)",
+  "sample": "565 issues mirrored 2026-08-27; deriver sample=200",
+  "method": "scripts/derive_labeling_profile.py --texts --agent claude --write (input-side scrub gate)",
+  "date": "2026-08-27"
+ }
+}

@@ -1,0 +1,113 @@
+{
+ "_schema_version": 1,
+ "adapters": [
+  {
+   "name": "generic_text",
+   "description": "Fallback analyzer for unknown text logs using cross-domain failure patterns."
+  },
+  {
+   "name": "jsonl_events",
+   "description": "Structured JSONL event-log analyzer for deploy and lifecycle traces."
+  },
+  {
+   "name": "claude_session",
+   "description": "Claude Code / Anthropic agent session JSONL transcripts (~/.claude/projects/**/*.jsonl).",
+   "detect_patterns": [
+    "\"type\":\"assistant\"",
+    "\"type\":\"user\"",
+    "\"tool_use\"",
+    "\"tool_use_id\"",
+    "file-history-snapshot"
+   ]
+  },
+  {
+   "name": "kubernetes",
+   "description": "Kubernetes pod/event/log analyzer.",
+   "detect_patterns": [
+    "CrashLoopBackOff",
+    "ImagePullBackOff",
+    "ErrImagePull",
+    "FailedScheduling",
+    "kubectl",
+    "pod/"
+   ]
+  },
+  {
+   "name": "docker_build",
+   "description": "Docker build, image pull/push, and dependency-failure analyzer.",
+   "detect_patterns": [
+    "docker build",
+    "error: failed to solve",
+    "Unable to locate package",
+    "No matching distribution found",
+    "manifest unknown"
+   ]
+  },
+  {
+   "name": "cloud_infra",
+   "description": "Cloud provider quota, IAM, capacity, and networking analyzer.",
+   "detect_patterns": [
+    "AccessDenied",
+    "UnauthorizedOperation",
+    "RequestLimitExceeded",
+    "VcpuLimitExceeded",
+    "InsufficientInstanceCapacity",
+    "Elastic Fabric Adapter"
+   ]
+  },
+  {
+   "name": "kernel_system",
+   "description": "Kernel, dmesg, OOM, and driver fault analyzer.",
+   "detect_patterns": [
+    "kernel panic",
+    "Call Trace:",
+    "oom-killer",
+    "NVRM: Xid",
+    "general protection fault"
+   ]
+  },
+  {
+   "name": "network_transport",
+   "description": "Network, transport, libfabric, EFA, and connectivity analyzer.",
+   "detect_patterns": [
+    "connection refused",
+    "timed out",
+    "NET/Plugin",
+    "libfabric",
+    "FI_EFA",
+    "NCCL_NET_PLUGIN",
+    "Using internal Network Socket"
+   ]
+  },
+  {
+   "name": "nccl_trace",
+   "description": "NCCL_DEBUG=TRACE analyzer using the sibling nccl-log-parser core through a local shim.",
+   "detect_patterns": [
+    "NCCL INFO",
+    "NCCL WARN",
+    "NET/OFI",
+    "NET/Plugin",
+    "AllReduce",
+    "ReduceScatter"
+   ]
+  },
+  {
+   "name": "bench_output",
+   "description": "Performance benchmark output: bandwidth, latency, p50/p90/min, GB/s, us/ms numbers. Heavily present across DeepEP/NVSHMEM/NIXL campaign logs.",
+   "detect_patterns": [
+    " GB/s",
+    " MB/s",
+    "p50=",
+    "p90=",
+    "p10=",
+    "avg_t=",
+    "bandwidth=",
+    "bandwidth:",
+    "latency:",
+    "dispatch+combine",
+    "us p50",
+    "ms p50"
+   ]
+  }
+ ]
+}

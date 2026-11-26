@@ -1,0 +1,55 @@
+{
+ "schema": "signature-profile/v1",
+ "name": "hpc",
+ "description": "Fine-grained failure-signature regexes for the maintainers' HPC dogfood corpus (ported from the reference flywheel session_learning_ingestor). Domain vocabulary is DATA per north-star invariant 3 — new corpora ship their own profile JSON, never Python edits.",
+ "derived_from": {
+  "corpus": "the reference flywheel sessions",
+  "method": "ported 2026-05 from the reference flywheel, moved out of Python 2026-08-27 (flagged by an external review and a foreign-corpus run)"
+ },
+ "patterns": {
+  "undefined_symbol": {
+   "regex": "\\bundefined symbol\\b",
+   "flags": "i"
+  },
+  "cuda_context": {
+   "regex": "cudaError[A-Za-z]+|CUDA context|device uninitialized",
+   "flags": "i"
+  },
+  "timeout": {
+   "regex": "\\btimeout|timed out\\b",
+   "flags": "i"
+  },
+  "not_enabled": {
+   "regex": "\\bNotEnabled\\b",
+   "flags": ""
+  },
+  "no_op_config": {
+   "regex": "\\bno-op|not read|does not exist|hallucinated\\b",
+   "flags": "i"
+  },
+  "ibgda_mismatch": {
+   "regex": "\\bIBGDA\\b|\\bmlx5\\b|\\bMellanox\\b",
+   "flags": ""
+  },
+  "efa_provider": {
+   "regex": "\\bEFA\\b|\\blibfabric\\b|\\bFI_PROVIDER\\b|\\baws-ofi-nccl\\b",
+   "flags": ""
+  },
+  "nvshmem": {
+   "regex": "\\bNVSHMEM\\b|\\bnvshmem\\b",
+   "flags": ""
+  },
+  "nixl": {
+   "regex": "\\bNIXL\\b|\\bnixl\\b",
+   "flags": ""
+  },
+  "selector_path": {
+   "regex": "\\bWideEPMoE\\b|\\bCutlassFusedMoE\\b|\\bAlltoallMethodType\\b",
+   "flags": ""
+  },
+  "path_qualification": {
+   "regex": "\\bflex\\s*\\+\\s*deepep\\b|\\balltoall\\b|\\btransport proof\\b|\\bpath qualification\\b",
+   "flags": "i"
+  }
+ }
+}

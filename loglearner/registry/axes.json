@@ -1,0 +1,607 @@
+{
+ "_schema_version": 1,
+ "_source": "maintainers-internal (not shipped)",
+ "axes": [
+  {
+   "id": "ingestion",
+   "title": "Session ingestion",
+   "problem": "Given a large agent transcript, produce a normalized event stream.",
+   "primitives": [
+    {
+     "keyword": "classify_session",
+     "source": "loglearner/session_scanner.py:138",
+     "role": "primary/observer/cron/subagent taxonomy"
+    },
+    {
+     "keyword": "scan_session",
+     "source": "loglearner/session_scanner.py:192",
+     "role": "per-session metadata + tool-use count"
+    },
+    {
+     "keyword": "detect_jsonl",
+     "source": "maintainers-internal (not shipped)",
+     "role": "is-this-JSONL predicate"
+    },
+    {
+     "keyword": "detect_adapters",
+     "source": "maintainers-internal (not shipped)",
+     "role": "pattern-based adapter selection"
+    },
+    {
+     "keyword": "signature_counts",
+     "source": "maintainers-internal (not shipped)",
+     "role": "regex-signature frequency map"
+    },
+    {
+     "keyword": "LoadTracesStep",
+     "source": "ace/steps/load_traces.py:14",
+     "role": "pipeline ingestion step contract"
+    },
+    {
+     "keyword": "session_log_pipeline",
+     "source": "maintainers-internal (not shipped)",
+     "role": "compile Codex+Claude sessions into LL-ready corpus"
+    }
+   ]
+  },
+  {
+   "id": "gap_detection",
+   "title": "Gap / failure detection",
+   "problem": "Find transcript segments containing corrections, errors, stuck loops, overflows.",
+   "primitives": [
+    {
+     "keyword": "detect_user_corrections",
+     "source": "loglearner/gap_detector.py:281",
+     "role": "no/stop/wrong/revert/wait"
+    },
+    {
+     "keyword": "detect_tool_error_clusters",
+     "source": "loglearner/gap_detector.py:342",
+     "role": "3+ consecutive tool errors"
+    },
+    {
+     "keyword": "detect_repeated_attempts",
+     "source": "loglearner/gap_detector.py:415",
+     "role": "same tool target 3+ times"
+    },
+    {
+     "keyword": "detect_context_overflows",
+     "source": "loglearner/gap_detector.py:468",
+     "role": "ran out of context"
+    },
+    {
+     "keyword": "detect_security_circumvention",
+     "source": "loglearner/gap_detector.py:526",
+     "role": "OWASP-style misalignment"
+    },
+    {
+     "keyword": "scan_claims",
+     "source": "maintainers-internal (not shipped)",
+     "role": "false-success claims within N-window"
+    },
+    {
+     "keyword": "SIGNATURE_PATTERNS",
+     "source": "maintainers-internal (not shipped)",
+     "role": "HPC-specific regex signatures"
+    },
+    {
+     "keyword": "detect_modes",
+     "source": "maintainers-internal (not shipped)",
+     "role": "bimodal distribution detector"
+    },
+    {
+     "keyword": "detect_plateau",
+     "source": "maintainers-internal (not shipped)",
+     "role": "optimization plateau"
+    },
+    {
+     "keyword": "DriftPattern",
+     "source": "maintainers-internal (not shipped)",
+     "role": "session drift classifier"
+    },
+    {
+     "keyword": "claude-session-analyzer",
+     "source": "maintainers-internal (not shipped)",
+     "role": "4-layer error grep ladder + timeline gap detection"
+    },
+    {
+     "keyword": "session-file-triage",
+     "source": "maintainers-internal (not shipped)",
+     "role": "session size classification"
+    }
+   ]
+  },
+  {
+   "id": "adapters",
+   "title": "Log-domain adapters",
+   "problem": "Dispatch log lines to a domain-specific analyzer (k8s, docker, EFA, NCCL...).",
+   "primitives": [
+    {
+     "keyword": "log_adapter_registry",
+     "source": "loglearner/registry/log_adapters.json",
+     "role": "9-domain registry (generic/jsonl/claude/k8s/docker/cloud/kernel/network/nccl)"
+    },
+    {
+     "keyword": "detect_adapter",
+     "source": "loglearner/adapters.py",
+     "role": "regex pattern dispatch"
+    },
+    {
+     "keyword": "deploy_log_learner",
+     "source": "maintainers-internal (not shipped)",
+     "role": "deploy-specific memory pack"
+    },
+    {
+     "keyword": "DEPLOY_TERMS_RE",
+     "source": "maintainers-internal (not shipped)",
+     "role": "docker/k8s/efa/cuda/nccl regex"
+    },
+    {
+     "keyword": "system_log_harness",
+     "source": "maintainers-internal (not shipped)",
+     "role": "generic system-log wrapper"
+    }
+   ]
+  },
+  {
+   "id": "pattern_mining",
+   "title": "Pattern mining",
+   "problem": "Find N-grams of tool use after trigger phrases; recurring failure/success chains.",
+   "primitives": [
+    {
+     "keyword": "tool_pattern_miner",
+     "source": "maintainers-internal (not shipped)",
+     "role": "trigger→tool N-gram with SUCCESS/BAD"
+    },
+    {
+     "keyword": "classify_outcome",
+     "source": "maintainers-internal (not shipped)",
+     "role": "correction-within-10-turns heuristic"
+    },
+    {
+     "keyword": "skill_harvester",
+     "source": "maintainers-internal (not shipped)",
+     "role": "event → chain → skill candidate"
+    },
+    {
+     "keyword": "extract_chains",
+     "source": "maintainers-internal (not shipped)",
+     "role": "event chain extractor"
+    },
+    {
+     "keyword": "session-skill-extractor",
+     "source": "maintainers-internal (not shipped)",
+     "role": "mine N-grams → auto-write SKILL.md"
+    },
+    {
+     "keyword": "git_log_miner",
+     "source": "maintainers-internal (not shipped)",
+     "role": "mine commit history for patterns"
+    },
+    {
+     "keyword": "batch_mine_instincts",
+     "source": "maintainers-internal (not shipped)",
+     "role": "mine experiment-result JSONs"
+    }
+   ]
+  },
+  {
+   "id": "extraction",
+   "title": "Instinct / skill extraction",
+   "problem": "From a gap + context, produce a rule with evidence, confidence, provenance.",
+   "primitives": [
+    {
+     "keyword": "harvest_context",
+     "source": "loglearner/context_harvester.py:90",
+     "role": "~1.5K-token context window"
+    },
+    {
+     "keyword": "synthesize_batch",
+     "source": "loglearner/example_synthesizer.py:357",
+     "role": "multi-LLM consensus"
+    },
+    {
+     "keyword": "instinct_extractor",
+     "source": "maintainers-internal (not shipped)",
+     "role": "2-pass regex+LLM"
+    },
+    {
+     "keyword": "enrich_instincts",
+     "source": "maintainers-internal (not shipped)",
+     "role": "single- and multi-model enrichment"
+    },
+    {
+     "keyword": "make_skill_candidate",
+     "source": "maintainers-internal (not shipped)",
+     "role": "chain → skill-doc shape"
+    },
+    {
+     "keyword": "Reflector.reflect",
+     "source": "ace/implementations/reflector.py:77",
+     "role": "structured ReflectorOutput"
+    },
+    {
+     "keyword": "RRStep.reflect",
+     "source": "ace/steps/rr_step.py:175",
+     "role": "recursive reflector (sandbox code execution)"
+    },
+    {
+     "keyword": "ExtractedLearning",
+     "source": "ace/core/outputs.py:32",
+     "role": "Pydantic-validated learning record"
+    }
+   ]
+  },
+  {
+   "id": "dedup",
+   "title": "Deduplication & clustering",
+   "problem": "Merge duplicate instincts across projects; compute confidence boost.",
+   "primitives": [
+    {
+     "keyword": "find_duplicates_llm",
+     "source": "maintainers-internal (not shipped)",
+     "role": "LLM semantic similarity"
+    },
+    {
+     "keyword": "find_duplicates_heuristic",
+     "source": "maintainers-internal (not shipped)",
+     "role": "token-overlap fallback"
+    },
+    {
+     "keyword": "merge_group_llm",
+     "source": "maintainers-internal (not shipped)",
+     "role": "LLM merger"
+    },
+    {
+     "keyword": "memory-topics",
+     "source": "maintainers-internal (not shipped)",
+     "role": "TF-IDF+SVD+agglomerative+Brandes"
+    },
+    {
+     "keyword": "recall_bridge_topics",
+     "source": "memory-topics",
+     "role": "cross-cluster bridge nodes"
+    },
+    {
+     "keyword": "DeduplicateStep",
+     "source": "ace/steps/deduplicate.py:14",
+     "role": "embedding-cosine dedup"
+    },
+    {
+     "keyword": "DeduplicationManager",
+     "source": "ace/deduplication/manager.py:27",
+     "role": "embedding dedup engine"
+    }
+   ]
+  },
+  {
+   "id": "verification",
+   "title": "Verification / gating",
+   "problem": "Which candidate rules survive statistical scrutiny, reviewer quorum, replay?",
+   "primitives": [
+    {
+     "keyword": "decision_engine",
+     "source": "maintainers-internal (not shipped)",
+     "role": "KEEP/REVERT with confidence intervals"
+    },
+    {
+     "keyword": "classify_verdict",
+     "source": "maintainers-internal (not shipped)",
+     "role": "verdict classifier"
+    },
+    {
+     "keyword": "score_rows",
+     "source": "maintainers-internal (not shipped)",
+     "role": "outcome-based scoring"
+    },
+    {
+     "keyword": "quorum_review_gate",
+     "source": "maintainers-internal (not shipped)",
+     "role": "reviewer-quorum gate"
+    },
+    {
+     "keyword": "validate_manifest",
+     "source": "maintainers-internal (not shipped)",
+     "role": "manifest validator"
+    },
+    {
+     "keyword": "shadow_replay_temporal",
+     "source": "maintainers-internal (not shipped)",
+     "role": "replay session with temporal window"
+    },
+    {
+     "keyword": "noise_floor_bench",
+     "source": "maintainers-internal (not shipped)",
+     "role": "noise-floor characterization"
+    },
+    {
+     "keyword": "claim_outcome_sensitivity",
+     "source": "maintainers-internal (not shipped)",
+     "role": "sensitivity analysis"
+    },
+    {
+     "keyword": "cross_session_recall",
+     "source": "maintainers-internal (not shipped)",
+     "role": "cross-session recall test"
+    },
+    {
+     "keyword": "regression_check",
+     "source": "maintainers-internal (not shipped)",
+     "role": "regression detector"
+    },
+    {
+     "keyword": "data_quality_gate",
+     "source": "maintainers-internal (not shipped)",
+     "role": "data-quality gate"
+    },
+    {
+     "keyword": "verify_candidate",
+     "source": "maintainers-internal (not shipped)",
+     "role": "candidate verifier"
+    },
+    {
+     "keyword": "EvaluateStep",
+     "source": "ace/steps/evaluate.py:9",
+     "role": "task-environment evaluation"
+    }
+   ]
+  },
+  {
+   "id": "runtime_injection",
+   "title": "Runtime injection",
+   "problem": "An instinct on disk is useless; how does it get into the next agent's prompt?",
+   "primitives": [
+    {
+     "keyword": "Skillbook",
+     "source": "ace/core/skillbook.py:348",
+     "role": "in-memory skill store"
+    },
+    {
+     "keyword": "Skillbook.update_skill",
+     "source": "ace/core/skillbook.py:411",
+     "role": "upsert skill"
+    },
+    {
+     "keyword": "UpdateStep",
+     "source": "ace/steps/update.py:11",
+     "role": "persist-to-skillbook"
+    },
+    {
+     "keyword": "AgentStep",
+     "source": "ace/steps/agent.py:11",
+     "role": "inject skillbook into prompt"
+    },
+    {
+     "keyword": "ClaudeCodeExecuteStep",
+     "source": "ace/integrations/claude_code.py:48",
+     "role": "Claude Code CLI runner"
+    },
+    {
+     "keyword": "learn_from_traces",
+     "source": "ace/runners/litellm.py:400",
+     "role": "post-hoc trace learning"
+    },
+    {
+     "keyword": "learn_from_feedback",
+     "source": "ace/runners/litellm.py:424",
+     "role": "feedback-driven learning"
+    },
+    {
+     "keyword": "observe.sh",
+     "source": "maintainers-internal (not shipped)",
+     "role": "PreToolUse/PostToolUse hook"
+    },
+    {
+     "keyword": "instinct-cli",
+     "source": "maintainers-internal (not shipped)",
+     "role": "promote/evolve/export/import"
+    },
+    {
+     "keyword": "session-guardian",
+     "source": "maintainers-internal (not shipped)",
+     "role": "background observer"
+    },
+    {
+     "keyword": "session-start.sh",
+     "source": "maintainers-internal (not shipped)",
+     "role": "inject memory on session start"
+    }
+   ]
+  },
+  {
+   "id": "memory",
+   "title": "Memory / recall",
+   "problem": "When the user says X in a new session, recall rule Y.",
+   "primitives": [
+    {
+     "keyword": "memory-recall",
+     "source": "maintainers-internal (not shipped)",
+     "role": "8 recall_* tools"
+    },
+    {
+     "keyword": "session_neighborhood",
+     "source": "maintainers-internal (not shipped)",
+     "role": "nearest-session retrieval"
+    },
+    {
+     "keyword": "session_timeline",
+     "source": "maintainers-internal (not shipped)",
+     "role": "per-session timeline"
+    },
+    {
+     "keyword": "context_query",
+     "source": "maintainers-internal (not shipped)",
+     "role": "signature-based query"
+    },
+    {
+     "keyword": "evidence_memory_compiler",
+     "source": "maintainers-internal (not shipped)",
+     "role": "compile evidence → memory substrate"
+    },
+    {
+     "keyword": "InsightSource",
+     "source": "ace/core/insight_source.py:108",
+     "role": "trace provenance"
+    },
+    {
+     "keyword": "TraceIdentity",
+     "source": "ace/core/insight_source.py:51",
+     "role": "stable trace IDs"
+    },
+    {
+     "keyword": "fingerprint_trace",
+     "source": "ace/core/insight_source.py:18",
+     "role": "trace fingerprint"
+    }
+   ]
+  },
+  {
+   "id": "pipeline",
+   "title": "Pipeline engine",
+   "problem": "How do stages hook together without one-off code paths?",
+   "primitives": [
+    {
+     "keyword": "Pipeline",
+     "source": "loglearner/pipeline.py",
+     "role": "LogLearner v2 composer"
+    },
+    {
+     "keyword": "StepProtocol",
+     "source": "loglearner/pipeline.py",
+     "role": "requires/provides contract"
+    },
+    {
+     "keyword": "PipelineContext",
+     "source": "loglearner/pipeline.py",
+     "role": "immutable step context"
+    },
+    {
+     "keyword": "ace.Pipeline",
+     "source": "ace/pipeline/pipeline.py:53",
+     "role": "reference composer with branching"
+    },
+    {
+     "keyword": "Branch",
+     "source": "ace/pipeline/branch.py:114",
+     "role": "parallel fan-out"
+    },
+    {
+     "keyword": "MergeStrategy",
+     "source": "ace/pipeline/branch.py:16",
+     "role": "raise/last-write/namespaced"
+    },
+    {
+     "keyword": "awq",
+     "source": "maintainers-internal (not shipped)",
+     "role": "the reference flywheel campaign orchestrator"
+    }
+   ]
+  },
+  {
+   "id": "output_shapes",
+   "title": "Output shapes",
+   "problem": "What downstream tools can consume.",
+   "primitives": [
+    {
+     "keyword": "instincts.json",
+     "source": "loglearner/example_synthesizer.py:374",
+     "role": "[{id, rule, evidence, confidence, category, positive_example, negative_example}]"
+    },
+    {
+     "keyword": "examples.jsonl",
+     "source": "loglearner/example_synthesizer.py:388",
+     "role": "paired pos/neg per session-line-range"
+    },
+    {
+     "keyword": "unified-v3",
+     "source": "output_llm/unified-v3/",
+     "role": "cross-project merged with source_projects, evidence_sources, merge_count"
+    },
+    {
+     "keyword": "caution_rules",
+     "source": "maintainers-internal (not shipped)",
+     "role": "hard-rule block list"
+    },
+    {
+     "keyword": "investigation_patterns",
+     "source": "maintainers-internal (not shipped)",
+     "role": "trigger→N-gram SUCCESS/BAD"
+    },
+    {
+     "keyword": "deploy_lessons",
+     "source": "maintainers-internal (not shipped)",
+     "role": "deploy-specific error+fix pairs"
+    },
+    {
+     "keyword": "Skill",
+     "source": "ace/core/skillbook.py:302",
+     "role": "skill + embedding + provenance"
+    },
+    {
+     "keyword": "SKILL.md",
+     "source": "maintainers-internal (not shipped)",
+     "role": "frontmatter + body (auto-generated skills)"
+    },
+    {
+     "keyword": "error-quick-reference",
+     "source": "maintainers-internal (not shipped)",
+     "role": "severity+root-cause+fix rows"
+    }
+   ]
+  },
+  {
+   "id": "memory_usage",
+   "title": "How 'log' shows up in memory corpus",
+   "problem": "What the team already does with logs — and what we're leaving on the table.",
+   "primitives": [
+    {
+     "keyword": "progress.jsonl",
+     "source": "maintainers-internal (not shipped)",
+     "role": "campaign progress log — mine for per-iteration instincts"
+    },
+    {
+     "keyword": "bench/logs",
+     "source": "maintainers-internal (not shipped)",
+     "role": "perf-number extraction target"
+    },
+    {
+     "keyword": "session-continuation",
+     "source": "maintainers-internal (not shipped)",
+     "role": "context overflow signal"
+    },
+    {
+     "keyword": "iteration_journal",
+     "source": "evaluation/iteration_journal.md",
+     "role": "per-iter instinct source"
+    }
+   ]
+  },
+  {
+   "id": "knowledge_artifacts",
+   "title": "Knowledge artifacts (gists, the reference flywheel stores)",
+   "problem": "Given an externally banked knowledge artifact (a private gist, a the reference flywheel knowledge folder), label it by lane/artifact-type/topic and make it findable alongside code primitives.",
+   "primitives": [
+    {
+     "keyword": "gist_index",
+     "source": "maintainers-internal (not shipped)",
+     "role": "scrubbed faceted index of the private gist corpus (state/gist-index.jsonl)"
+    },
+    {
+     "keyword": "gist_facets",
+     "source": "docs/GIST-LABELING.md",
+     "role": "deterministic facet scheme: topic/artifact_type/lane/date/visibility/flags"
+    },
+    {
+     "keyword": "knowledge_index",
+     "source": "maintainers-internal (not shipped)",
+     "role": "the reference flywheel-schema rule inventory with rule-hash dedupe (state/knowledge-index.jsonl)"
+    },
+    {
+     "keyword": "register_source",
+     "source": "loglearner/sources/__init__.py:1",
+     "role": "source plugin registry (E1 S1.4): claude/gist/reference"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,385 @@
+[
+ {
+  "id": "FX-K01",
+  "rule": "Never launch a CUDA kernel without checking the launch bounds against the device limits. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 11,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture",
+  "provenance": {
+   "origin": "experiment_fail",
+   "tested": true
+  }
+ },
+ {
+  "id": "FX-K02",
+  "rule": "A kernel that reads host memory through a stale pointer corrupts data silently; validate pointers after every reallocation. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 10,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K03",
+  "rule": "Kernel timing must be measured on a fresh pod; accumulated state degrades cuda graph launch latency. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 10,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K04",
+  "rule": "Guard cuda printf behind rank and iteration checks or the kernel floods ephemeral storage. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 9,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K05",
+  "rule": "Do not assume a kernel compiled for one SM count runs unchanged at another; cuda template specialization embeds the grid. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 9,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K06",
+  "rule": "Record every kernel candidate with its exact source hash before measuring it on cuda hardware. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 9,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K07",
+  "rule": "A cuda error at the first forward is a shape or budget problem until the kernel source proves otherwise. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 8,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K08",
+  "rule": "Kernel microbench wins do not establish serving benefit; keep the two measurements separate. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 8,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K09",
+  "rule": "Prefer whole-kernel replays over cuda snippet tests when a regression spans launch boundaries. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 7,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K10",
+  "rule": "Retire a kernel variant only after the cuda correctness suite fails on planted input. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 7,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-K11",
+  "rule": "Kernel work on shared cuda pods needs a lock claim and a release when done. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 6,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-S01",
+  "rule": "num_sms is a template parameter: changing num_sms recompiles the dispatch kernel, so sweep it as a separate arm. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 9,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-S02",
+  "rule": "Reserve qp_channel_slots at the host maximum, never at the bench shape. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 9,
+  "status": "negative",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-P01",
+  "rule": "The proxy thread must drain completions before signalling; a proxy that signals early loses data. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 10,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-N01",
+  "rule": "On neuron hardware compile with the installed nki toolchain version, never a cached one. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 10,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-D01",
+  "rule": "A dispatch kernel that spins on the first cross-node request is a transport setup fault, not a model fault; check the combine path separately. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 10,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-D02",
+  "rule": "nvshmem puts must be followed by a fence before the signal, or the receiver sees the signal before the data. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 10,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-D03",
+  "rule": "Measure dispatch and combine on the same fresh pod pair; mixing pods makes the combine delta unreadable. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 9,
+  "status": "active",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-D04",
+  "rule": "Combine-only wins are not serving wins; a dispatch regression can erase them at the first forward. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop. This rule text is padded so that budget tests have something to drop.",
+  "confidence": 9,
+  "status": "negative",
+  "evidence": "fixture",
+  "source": "fixture"
+ },
+ {
+  "id": "FX-B01",
+  "rule": "Build container images FROM an official NGC base and run docker build with --pull so the base layer is fresh.",
+  "confidence": 9,
+  "category": "containers",
+  "tags": [
+   "docker"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-B02",
+  "rule": "Validate collective bandwidth after every driver change with a two-node run before trusting any benchmark number.",
+  "confidence": 8,
+  "category": "networking",
+  "tags": [
+   "efa",
+   "nccl-tests"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-B03",
+  "rule": "Before buying an EC2 capacity block, confirm the instance type and interconnect requirement of the workload.",
+  "confidence": 8,
+  "category": "capacity",
+  "tags": [
+   "aws",
+   "ec2"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-B04",
+  "rule": "kubectl apply on a GPU node pool must be followed by a fresh-pod check before any latency baseline.",
+  "confidence": 8,
+  "category": "k8s",
+  "tags": [
+   "kubectl"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-B05",
+  "rule": "Pin the network installer version in the image build and re-check upstream before each release.",
+  "confidence": 8,
+  "category": "containers",
+  "tags": [
+   "docker"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture",
+  "version_scope": "installer 1.4x on p5 instances"
+ },
+ {
+  "id": "FX-A01",
+  "rule": "Register a PreToolUse hook with an explicit timeout and make it always exit 0, so a slow or broken hook never blocks the tool call.",
+  "confidence": 9,
+  "category": "agent-engineering",
+  "tags": [
+   "claude-code",
+   "hooks",
+   "settings"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture",
+  "version_scope": "Claude Code 2.1.x"
+ },
+ {
+  "id": "FX-S03",
+  "rule": "pkill -f matches your own shell's command line too; resolve the PID first and kill by PID, in a separate step from the relaunch.",
+  "confidence": 9,
+  "category": "agent-operations",
+  "tags": [
+   "pkill",
+   "shell",
+   "process"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "negative",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-S04",
+  "rule": "A loose grep over tool output matches your own command line; anchor the pattern or filter with a bracketed first letter.",
+  "confidence": 8,
+  "category": "agent-operations",
+  "tags": [
+   "grep",
+   "shell",
+   "regex"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-G00",
+  "rule": "After pushing, verify the commit's author login on the remote; a noreply address silently changes the attribution.",
+  "confidence": 8,
+  "category": "git-and-upstream",
+  "tags": [
+   "git",
+   "github",
+   "pr"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-G01",
+  "rule": "Never rebase a shared branch in place; rebase onto a fresh topic branch and force-with-lease only your own branch.",
+  "confidence": 8,
+  "category": "git-and-upstream",
+  "tags": [
+   "git",
+   "rebase"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "negative",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-S05",
+  "rule": "Scripts that delete must guard every variable a path is built from, or an empty variable turns the target into the filesystem root.",
+  "confidence": 9,
+  "category": "agent-operations",
+  "tags": [
+   "shell",
+   "bash",
+   "rm"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "negative",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-G02",
+  "rule": "A nested .git directory inside the working tree is staged as an embedded repository by a blanket add; remove it or make it a submodule first.",
+  "confidence": 9,
+  "category": "git-and-upstream",
+  "tags": [
+   "git",
+   "nested_repo",
+   "repository_state"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "negative",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-G03",
+  "rule": "Parse only the porcelain form of git status in scripts; the human form changes between versions.",
+  "confidence": 8,
+  "category": "git-and-upstream",
+  "tags": [
+   "git",
+   "status"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-R01",
+  "rule": "Tag every container image with the git commit it was built from, never only latest.",
+  "confidence": 8,
+  "category": "containers",
+  "tags": [
+   "docker"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-R01-old",
+  "rule": "Tag every container image with the build date, never only latest (superseded wording).",
+  "confidence": 9,
+  "category": "containers",
+  "tags": [
+   "docker"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "deprecated",
+  "provenance": "fixture"
+ },
+ {
+  "id": "FX-R02-dormant",
+  "rule": "Pin docker base images to a digest in every build file (dormant twin).",
+  "confidence": 9,
+  "category": "containers",
+  "tags": [
+   "docker"
+  ],
+  "evidence": "fixture",
+  "source": "fixture",
+  "status": "positive",
+  "provenance": "fixture",
+  "lifecycle_state": "dormant"
+ }
+]

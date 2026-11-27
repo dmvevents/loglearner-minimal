@@ -1,0 +1,8 @@
+{
+  "name": "gpu-cluster-basics",
+  "version": "0.1.0",
+  "sha256": "8edbe1d0e9967208a9b49cab13b962dd1124cf91dd12a23ecb04be13f6d00b39",
+  "records": 21,
+  "as_of": "2000-01-01",
+  "about": "Example LogLearner knowledge pack: generic GPU, NCCL, EFA, Kubernetes and PyTorch troubleshooting records written from public documentation (each record's source)."
+}

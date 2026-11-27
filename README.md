@@ -1,4 +1,6 @@
 > **Public minimal runtime of LogLearner; upstream development is private.** This repository is the gated minimal-runtime export (version 0.1.13), file-for-file identical to `dist/loglearner-minimal-0.1.13-20261126.tar.gz` except for this note. See RELEASE.md.
+>
+> examples/ holds an example knowledge pack, published as its own release asset; it is not part of the runtime tarball.
 
 # Log Learner — minimal runtime (vendored)
 
